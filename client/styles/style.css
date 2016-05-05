@@ -1,0 +1,39 @@
+@font-face{
+    font-family: gothamBold;
+    src: url('/assets/styles/fonts/Gotham-Bold.ttf');
+}
+@font-face{
+    font-family: gothamLight;
+    src: url('/assets/styles/fonts/gotham-light.ttf')
+}
+
+body {
+    font-family: gothamLight;
+}
+
+
+/*admin css*/
+
+
+.alertButtons {
+    display: inline-block;
+    background-color: black;
+}
+
+/*user css*/
+
+.extreme {
+    background-color: red;
+}
+.severe {
+    background-color: orange;
+}
+.moderate {
+    background-color: blue;
+}
+.minor {
+    background-color: lightblue;
+}
+.unknown {
+    background-color: green;
+}

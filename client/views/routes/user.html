@@ -1,0 +1,33 @@
+<div class="noAlert" ng-hide="alertHappening">
+    <nav class='navbar navbar-inverse'>
+        <div class="container-fluid">
+            <ul class="nav navbar-nav">
+                <li><a href="#alert">Alert Page</a></li>
+
+            </ul>
+        </div>
+    </nav>
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <h1 ng-hide="alertHappening">There are no alerts at this time<br>
+            <small>You'll know when there's an alert...</small></h1>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+</div>
+
+<div class="row" ng-show = "alertHappening">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <h1 style="margin-top:80px;">We have an Alert!</h1>
+        <h3>Severity: {{alertInfo.severity}}</h3>
+        <h3>Status: {{alertInfo.status}}</h3>
+        <h3>Urgency: {{alertInfo.urgency}}</h3>
+        <h3>Sender: {{alertInfo.sender}}</h3>
+        <h3>Instructions: {{alertInfo.instructions}}</h3>
+        <h3>Certainty: {{alertInfo.certainty}}</h3>
+        <h3>Category: {{alertInfo.category}}</h3>
+    </div>
+    <div class="col-md-2"></div>
+</div>
