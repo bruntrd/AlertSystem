@@ -69,14 +69,14 @@ myApp.controller('UserController', ['$scope', 'alertFactory', 'socket', function
                 case "Minor":
                     $scope.minor();
                     break;
-                case "unknown":
+                case "Unknown":
                     $scope.minor();
                     break;
             }
         }
     };
     $scope.startSocketPing = function(){
-        mySocket.emit('client');
+        mySocket.emit('stayConnected');
     }
 
 
@@ -84,7 +84,9 @@ myApp.controller('UserController', ['$scope', 'alertFactory', 'socket', function
     //sockets
     mySocket.on('keepConnected', function(data){
         console.log('keeping connection');
-        setTimeout(function(){mySocket.emit('stayConnected')},10000);
+        setTimeout(function(){
+            mySocket.emit('stayConnected');
+        },10000);
     });
 
     mySocket.on('userAlert', function(data){
@@ -92,7 +94,10 @@ myApp.controller('UserController', ['$scope', 'alertFactory', 'socket', function
         $scope.alertInfo = data.alert;
         console.log($scope.alertInfo)
         $scope.alertCases($scope.alertInfo);
-        setTimeout(function(){mySocket.emit('alertOver', {data: 'alert is over'})},30000);
+        setTimeout(function(){
+            mySocket.emit('alertOver', {data: 'alert is over'});
+            console.log('sent alertOve event');
+        },3000);
     })
 
     //initial functions
@@ -116,13 +121,18 @@ myApp.controller('AdminController', ['$scope','alertFactory', 'socket', function
     //socket events
 
     mySocket.on('removeAlert', function(){
-        $scope.$apply(function() {
-            $scope.sentAlert = false;
-            var el = angular.element('.alertButtons')
-            el.prop('disabled', false);
+        setTimeout(function() {
+            $scope.$apply(function () {
+                $scope.sentAlert = false;
+                var el = angular.element('.alertButtons')
+                el.prop('disabled', false);
+                $scope.reset();
 
 
-        })
+
+
+            })
+        },40000);
     });
 
     mySocket.on('keepConnected', function(){
@@ -135,7 +145,7 @@ myApp.controller('AdminController', ['$scope','alertFactory', 'socket', function
     //functions
 
     $scope.startSocketPing = function(){
-        mySocket.emit('client');
+        mySocket.emit('stayConnected');
     }
 
     $scope.dateFunction = function(){
@@ -152,7 +162,6 @@ myApp.controller('AdminController', ['$scope','alertFactory', 'socket', function
         alertObject.sent = true;
         mySocket.emit('adminAlert', {alertInfo: alertObject });
         $scope.sentAlert = true;
-        $scope.alertObject = alertFactory.customAlert;
         var el = angular.element('.alertButtons')
         el.prop('disabled', true);
 
@@ -165,6 +174,14 @@ myApp.controller('AdminController', ['$scope','alertFactory', 'socket', function
         var el = angular.element('.alertButtons')
         el.prop('disabled', true);
 
+    };
+
+    $scope.reset = function(form) {
+        if (form) {
+            form.$setPristine();
+            form.$setUntouched();
+        }
+        $scope.alertInfo = angular.copy($scope.master);
     };
 
     // init

@@ -18,16 +18,19 @@ alertSocket.on('connection', function(socket){
 
     socket.on('stayConnected', function(data){
         console.log('keepingConnection');
-        setTimeout(function(){alertSocket.to(socket.id).emit('keepConnected')},10000);
+        setTimeout(function(){
+            alertSocket.to(socket.id).emit('keepConnected');
+            console.log('keepingConnection sent');
+        },10000);
     });
 
     socket.on('adminAlert', function(data){
-        console.log('an alert was received', data.alertInfo);
+        console.log('an alert was received');
         alertSocket.sockets.emit('userAlert', {alert: data.alertInfo});
     });
 
     socket.on('alertOver', function(data){
-        console.log(data.data);
+        console.log("alert attempted");
         alertSocket.sockets.emit('removeAlert');
     })
 
