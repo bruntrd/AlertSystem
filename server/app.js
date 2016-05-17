@@ -1,16 +1,16 @@
 var express = require('express');
 var fs = require('fs');
 var app = express();
-var https = require('https');
-var options = {
-    key: fs.readFileSync('./ssl/31499481-avi9csjww1.key'),
-    cert: fs.readFileSync('./ssl/31499481-avi9csjww1.cert')
-};
-var server = https.createServer(options, app)
+var http = require('http');
+//var options = {
+//    key: fs.readFileSync('./ssl/31499481-avi9csjww1.key'),
+//    cert: fs.readFileSync('./ssl/31499481-avi9csjww1.cert')
+//};
+var server = http.createServer(app)
 var index = require('./routes/index');
 var path = require('path');
 var alertSocket = require('socket.io')(server);
-var port = 5000;
+var port = 80;
 
 
 //app.set("port", (process.env.PORT || 5000));
@@ -47,7 +47,7 @@ alertSocket.on('connection', function(socket){
 
 });
 
-server.listen(port, '0.0.0.0', function(){
+server.listen(port, function(){
     console.log(this._connectionKey)
     console.log("listening on port: " + port);
 });
