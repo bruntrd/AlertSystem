@@ -1,6 +1,6 @@
 var myApp = angular.module('myApp');
 
-myApp.controller('UserController', ['$scope', 'alertFactory', 'socket', function($scope, alertFactory, socket) {
+myApp.controller('UserController', ['$scope', 'alertFactory', 'socket','$location', function($scope, alertFactory, socket,$location) {
     console.log('user controller');
     //vars
     var counter;
@@ -8,7 +8,8 @@ myApp.controller('UserController', ['$scope', 'alertFactory', 'socket', function
     $scope.alertInfo;
     $scope.alertHappening = false;
     var mySocket = socket.socket;
-
+    $scope.baseUrl = $location.host();
+    console.log($scope.baseUrl)
     //functions
     $scope.flashAlert = function(flashClass, func){
         counter ++;
@@ -55,7 +56,7 @@ myApp.controller('UserController', ['$scope', 'alertFactory', 'socket', function
         $scope.$apply(function(){
             $scope.alertHappening = true;
         });
-        if (alert.status == "Actual") {
+        if (alert.status == "Actual" || alert.status=="Test" || alert.status =="Exercise") {
             switch (alert.severity) {
                 case "Extreme":
                     $scope.extreme();
@@ -205,13 +206,16 @@ myApp.factory('alertFactory', function(){
 
 });
 
-myApp.factory('socket', function(){
-    var socket = io.connect('http://localhost:5000');
+myApp.factory('socket', ['$location','$window', function($location){
+    var baseUrl = $location.host();
+    console.log('window.location ' + window.location.hostname);
+    console.log('base url' + baseUrl);
+    var socket = io.connect('https://'+baseUrl+':5000', {secure: true});
 
     return {
         socket: socket
     }
 
-})
+}])
 
 
