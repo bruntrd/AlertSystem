@@ -87,7 +87,7 @@ myApp.controller('UserController', ['$scope', 'alertFactory', 'socket','$locatio
         console.log('keeping connection');
         setTimeout(function(){
             mySocket.emit('stayConnected');
-        },10000);
+        },30000);
     });
 
     mySocket.on('userAlert', function(data){
@@ -138,7 +138,7 @@ myApp.controller('AdminController', ['$scope','alertFactory', 'socket', function
 
     mySocket.on('keepConnected', function(){
         console.log('keeping connection');
-        setTimeout(function(){mySocket.emit('stayConnected')},10000);
+        setTimeout(function(){mySocket.emit('stayConnected')},30000);
     });
 
 
@@ -210,12 +210,12 @@ myApp.factory('socket', ['$location','$window', function($location){
     var baseUrl = $location.host();
     console.log('window.location ' + window.location.hostname);
     console.log('base url' + baseUrl);
-    var socket = io.connect('https://'+baseUrl+':5000', {secure: true});
+    var socket = io.connect(baseUrl, {secure: true});
 
     return {
         socket: socket
     }
 
-}])
+}]);
 
 
