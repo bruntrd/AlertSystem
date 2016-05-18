@@ -12,6 +12,10 @@ myApp.config(['$routeProvider', function($routeProvider){
         templateUrl: "/assets/views/routes/admin.html",
         controller: "AdminController"
     }).
+    when('/about', {
+        templateUrl: "/assets/views/routes/about.html",
+        controller: "AboutController"
+    }).
     otherwise({
         redirectTo: "/user"
     });

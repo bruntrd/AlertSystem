@@ -4,12 +4,13 @@ myApp.controller('UserController', ['$scope', 'alertFactory', 'socket','$locatio
     console.log('user controller');
     //vars
     var counter;
-    var flashes = 20;
+    var flashes = 10;
     $scope.alertInfo;
     $scope.alertHappening = false;
     var mySocket = socket.socket;
     $scope.baseUrl = $location.host();
-    console.log($scope.baseUrl)
+    console.log($scope.baseUrl);
+
     //functions
     $scope.flashAlert = function(flashClass, func){
         counter ++;
@@ -95,11 +96,11 @@ myApp.controller('UserController', ['$scope', 'alertFactory', 'socket','$locatio
         $scope.alertInfo = data.alert;
         console.log($scope.alertInfo)
         $scope.alertCases($scope.alertInfo);
-        setTimeout(function(){
-            mySocket.emit('alertOver', {data: 'alert is over'});
-            console.log('sent alertOve event');
-        },3000);
-    })
+        //setTimeout(function(){
+        //    mySocket.emit('alertOver', {data: 'alert is over'});
+        //    console.log('sent alertOve event');
+        //},3000);
+    });
 
     //initial functions
     $scope.startSocketPing();
@@ -114,27 +115,13 @@ myApp.controller('AdminController', ['$scope','alertFactory', 'socket', function
     var mySocket = socket.socket;
     $scope.lastUpdated;
     $scope.sentAlert = false;
-    console.log(alertFactory.customAlert, alertFactory.generalAlert);
+    var blankCustomAlert = angular.copy(alertFactory.customAlert);
     $scope.severityOptions = ['Extreme', 'Severe', 'Moderate', 'Minor', 'Unknown'];
     $scope.certaintyOptions = ['Observed', 'Likely', 'Possible', 'Unlikely', 'Unknown'];
-    $scope.statusOptions = ['Actual', 'Exercise', 'System', 'Test', 'Draft']
+    $scope.statusOptions = ['Actual', 'Exercise', 'Test'];
 
     //socket events
 
-    mySocket.on('removeAlert', function(){
-        setTimeout(function() {
-            $scope.$apply(function () {
-                $scope.sentAlert = false;
-                var el = angular.element('.alertButtons')
-                el.prop('disabled', false);
-                $scope.reset();
-
-
-
-
-            })
-        },40000);
-    });
 
     mySocket.on('keepConnected', function(){
         console.log('keeping connection');
@@ -160,11 +147,19 @@ myApp.controller('AdminController', ['$scope','alertFactory', 'socket', function
 
     };
     $scope.sendCustomAlert = function(alertObject){
+        console.log('fired')
         alertObject.sent = true;
         mySocket.emit('adminAlert', {alertInfo: alertObject });
         $scope.sentAlert = true;
-        var el = angular.element('.alertButtons')
+        var el = angular.element('.alertButtons');
         el.prop('disabled', true);
+        setTimeout(function(){
+            $scope.$apply(function(){
+                $scope.sentAlert = false;
+                el.prop('disabled', false);
+                console.log($scope.sentAlert);
+            })
+        }, 20000);
 
     };
 
@@ -172,23 +167,31 @@ myApp.controller('AdminController', ['$scope','alertFactory', 'socket', function
         alertFactory.generalAlert.sent = true;
         mySocket.emit('adminAlert', {alertInfo: alertFactory.generalAlert});
         $scope.sentAlert = true;
-        var el = angular.element('.alertButtons')
+        var el = angular.element('.alertButtons');
         el.prop('disabled', true);
+        setTimeout(function(){
+            $scope.$apply(function(){
+            $scope.sentAlert = false;
+            el.prop('disabled', false);
+            console.log($scope.sentAlert);
+            })
+        }, 20000);
 
     };
 
-    $scope.reset = function(form) {
-        if (form) {
-            form.$setPristine();
-            form.$setUntouched();
-        }
-        $scope.alertInfo = angular.copy($scope.master);
+    $scope.reset = function() {
+        alertFactory.customAlert = angular.copy(blankCustomAlert);
+        $scope.alertForm.$setPristine();
+
     };
 
     // init
-    $scope.lastUpdated = $scope.dateFunction()
-    $scope.startSocketPing();
+    $scope.lastUpdated = $scope.dateFunction();
+    //$scope.startSocketPing();
 
+}]);
+myApp.controller('AboutController', ['$scope', 'alertFactory', 'socket','$location', function($scope, alertFactory, socket,$location) {
+    console.log('about controller')
 }]);
 
 myApp.factory('alertFactory', function(){
@@ -208,8 +211,6 @@ myApp.factory('alertFactory', function(){
 
 myApp.factory('socket', ['$location','$window', function($location){
     var baseUrl = $location.host();
-    console.log('window.location ' + window.location.hostname);
-    console.log('base url' + baseUrl);
     var socket = io.connect(baseUrl, {secure: true});
 
     return {

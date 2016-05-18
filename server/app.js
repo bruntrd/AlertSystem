@@ -6,7 +6,7 @@ var http = require('http');
 //    key: fs.readFileSync('./ssl/31499481-avi9csjww1.key'),
 //    cert: fs.readFileSync('./ssl/31499481-avi9csjww1.cert')
 //};
-var server = http.createServer(app)
+var server = http.createServer(app);
 var index = require('./routes/index');
 var path = require('path');
 var alertSocket = require('socket.io')(server);
@@ -19,25 +19,25 @@ app.use('/', index);
 
 alertSocket.on('connection', function(socket){
 
-    alertSocket.to(socket.id).emit('keepConnected');
-
-    socket.on('stayConnected', function(data){
-        console.log('keepingConnection');
-        setTimeout(function(){
-            alertSocket.to(socket.id).emit('keepConnected');
-            console.log('keepingConnection sent');
-        },10000);
-    });
+    //alertSocket.to(socket.id).emit('keepConnected');
+    //
+    //socket.on('stayConnected', function(data){
+    //    console.log('keepingConnection');
+    //    setTimeout(function(){
+    //        alertSocket.to(socket.id).emit('keepConnected');
+    //        console.log('keepingConnection sent');
+    //    },60000);
+    //});
 
     socket.on('adminAlert', function(data){
         console.log('an alert was received');
-        alertSocket.sockets.emit('userAlert', {alert: data.alertInfo});
+        socket.broadcast.emit('userAlert', {alert: data.alertInfo});
     });
 
     socket.on('alertOver', function(data){
         console.log("alert attempted");
         alertSocket.sockets.emit('removeAlert');
-    })
+    });
 
 
     socket.on('disconnect', function(){

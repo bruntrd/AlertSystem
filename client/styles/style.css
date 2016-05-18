@@ -37,3 +37,9 @@ body {
 .unknown {
     background-color: green;
 }
+
+/*about css*/
+
+.info {
+    font-size:18px;
+}
